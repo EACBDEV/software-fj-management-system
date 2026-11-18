@@ -434,6 +434,39 @@ def open_reservation_window():
     refresh()
 # Final Ventana de reservas y calculo de costos #
 
+# Ventana de estadísticas o resumen financiero #
+def open_stats_window():
+    window = tk.Toplevel(main_window)
+    window.title("Software FJ - System Statistics")
+    window.geometry("420x340")
+    window.resizable(False, False)
+    
+    total_clients = len(system.clients)
+    total_services = len(system.services)
+    confirmed_reservations = [r for r in system.reservations if r.status == "Confirmed"]
+    total_revenue = sum(r.total for r in confirmed_reservations)
+    
+    tk.Label(window, text="SYSTEM STATISTICS & SUMMARY", font=("Arial", 14, "bold")).pack(pady=15)
+    
+    frame = tk.Frame(window)
+    frame.pack(pady=5)
+    
+    tk.Label(frame, text=f"Total Registered Clients:", font=("Arial", 10, "bold")).grid(row=0, column=0, sticky="w", padx=10, pady=8)
+    tk.Label(frame, text=f"{total_clients}", font=("Arial", 10)).grid(row=0, column=1, sticky="e", padx=10, pady=8)
+    
+    tk.Label(frame, text=f"Total Created Services:", font=("Arial", 10, "bold")).grid(row=1, column=0, sticky="w", padx=10, pady=8)
+    tk.Label(frame, text=f"{total_services}", font=("Arial", 10)).grid(row=1, column=1, sticky="e", padx=10, pady=8)
+    
+    tk.Label(frame, text=f"Confirmed Reservations:", font=("Arial", 10, "bold")).grid(row=2, column=0, sticky="w", padx=10, pady=8)
+    tk.Label(frame, text=f"{len(confirmed_reservations)}", font=("Arial", 10)).grid(row=2, column=1, sticky="e", padx=10, pady=8)
+    
+    tk.Label(frame, text=f"Total Revenue (Confirmed):", font=("Arial", 11, "bold"), fg="darkgreen").grid(row=3, column=0, sticky="w", padx=10, pady=8)
+    tk.Label(frame, text=f"${total_revenue:,.2f}", font=("Arial", 11, "bold"), fg="green").grid(row=3, column=1, sticky="e", padx=10, pady=8)
+    
+    tk.Button(window, text="Close", width=18, command=window.destroy).pack(pady=20)
+    
+    logging.info("System statistics window opened.")
+    
 
 # Pruebas de operaciones correctas e incorrectas #
 def run_tests():
@@ -505,6 +538,7 @@ def open_main_menu():
     tk.Button(main_window, text="Client Management", width=30, command=open_client_window).pack(pady=12)
     tk.Button(main_window, text="Service Management", width=30, command=open_service_window).pack(pady=12)
     tk.Button(main_window, text="Reservation Management", width=30, command=open_reservation_window).pack(pady=12)
+    tk.Button(main_window, text="View System Statistics", width=30, command=open_stats_window).pack(pady=12)
     tk.Button(main_window, text="Run Tests", width=30, command=run_tests).pack(pady=12)
     tk.Button(main_window, text="Exit", width=30, command=main_window.destroy).pack(pady=12)
     main_window.mainloop()
