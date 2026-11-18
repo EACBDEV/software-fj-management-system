@@ -511,12 +511,57 @@ def open_main_menu():
 # Final Ventana principal de la aplicacion #
 ##### FINAL FUNCIONES #####
 
+def open_login_window():
+    login_win = tk.Tk()
+    login_win.title("Software FJ - Login")
+    login_win.geometry("360x280")
+    login_win.resizable(False, False)
+
+    tk.Label(login_win, text="SOFTWARE FJ", font=("Arial", 16, "bold")).pack(pady=(20, 5))
+    tk.Label(login_win, text="Please sign in to continue", fg="gray", font=("Arial", 9)).pack(pady=(0, 15))
+
+    frame = tk.Frame(login_win)
+    frame.pack(pady=5)
+
+    tk.Label(frame, text="Username:", font=("Arial", 10)).grid(row=0, column=0, padx=8, pady=8, sticky="e")
+    user_entry = tk.Entry(frame, width=24, font=("Arial", 10))
+    user_entry.grid(row=0, column=1, padx=8, pady=8)
+
+    tk.Label(frame, text="Password:", font=("Arial", 10)).grid(row=1, column=0, padx=8, pady=8, sticky="e")
+    pass_entry = tk.Entry(frame, width=24, show="*", font=("Arial", 10))
+    pass_entry.grid(row=1, column=1, padx=8, pady=8)
+
+    def validate_login():
+        try:
+            user = user_entry.get().strip()
+            password = pass_entry.get().strip()
+
+            if not user or not password:
+                raise InvalidDataError("Username and password cannot be empty.")
+            
+            if user == "admin" and password == "1234":
+                logging.info("User logged in successfully: %s", user)
+                messagebox.showinfo("Success", "Login successful!")
+                login_win.destroy()
+                open_main_menu()
+            else:
+                raise SystemErrorFJ("Invalid username or password.")
+                
+        except (SystemErrorFJ, ValueError) as error:
+            show_error(error)
+        finally:
+            logging.info("Login attempt finished.")
+
+    tk.Button(login_win, text="Login", width=22, command=validate_login).pack(pady=15)
+    login_win.mainloop()
+
+# Ventana de Login integrada con el sistema
 
 ##### CODIGO PRINCIPAL #####
 # Creacion del sistema e inicio de la interfaz #
 if __name__ == "__main__":
     system = ManagementSystem()
     logging.info("Software FJ application started.")
-    open_main_menu()
+    open_login_window()
 # Final Creacion del sistema e inicio de la interfaz #
 ##### FINAL CODIGO PRINCIPAL #####
